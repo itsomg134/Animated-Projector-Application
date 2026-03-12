@@ -9,6 +9,8 @@ A interactive, animated vintage film projector simulation built with HTML, CSS, 
 
 ##  Features
 
+![Screenshot_12-3-2026_225435_127 0 0 1](https://github.com/user-attachments/assets/a4df6d43-1dfa-4da4-b42b-0faa24f9b2de)
+
 ###  Projector Components
 - **Rotating Lens** with dynamic color-changing effects
 - **Spinning Film Reels** with realistic animation
