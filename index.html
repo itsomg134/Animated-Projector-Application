@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Projector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            font-size: 2.5em;
+            letter-spacing: 2px;
+        }
+
+        .projector {
+            background: #2c3e50;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 
+                        0 0 0 2px #34495e inset,
+                        0 0 20px rgba(52, 152, 219, 0.3);
+            position: relative;
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Projector Body */
+        .projector-body {
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            border: 3px solid #1e2b3a;
+        }
+
+        /* Lens */
+        .lens-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .lens {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1a1a1a, #333);
+            border-radius: 50%;
+            border: 8px solid #f1c40f;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(241, 196, 15, 0.3);
+            animation: lens-glow 3s infinite;
+        }
+
+        .lens-inner {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, #fff, #ffd700, #ff6b6b);
+            border-radius: 50%;
+            animation: lens-rotate 10s linear infinite;
+        }
+
+        .lens-reflection {
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: reflection-move 4s ease-in-out infinite;
+        }
+
+        /* Film Reels */
+        .reels {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .reel {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+            border-radius: 50%;
+            border: 8px solid #bdc3c7;
+            position: relative;
+            animation: reel-spin 4s linear infinite;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .reel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #34495e;
+            border-radius: 50%;
+            border: 4px solid #2c3e50;
+        }
+
+        .reel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background: #e74c3c;
+            border-radius: 50%;
+            animation: reel-pulse 1s ease-in-out infinite;
+        }
+
+        .reel.left {
+            animation-direction: reverse;
+        }
+
+        /* Film Strip */
+        .film-strip {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .film-frame {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            border: 3px solid #d35400;
+            border-radius: 5px;
+            animation: frame-glow 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .film-frame::before {
+            content: '🎬';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            animation: frame-content 8s linear infinite;
+        }
+
+        /* Projector Light */
+        .light-beam {
+            position: absolute;
+            top: 30%;
+            right: -200px;
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.8) 0%, 
+                rgba(255,255,255,0.4) 50%,
+                transparent 100%);
+            clip-path: polygon(0 0, 100% 20%, 100% 80%, 0 100%);
+            animation: light-flicker 0.2s infinite;
+            opacity: 0.6;
+        }
+
+        /* Controls */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .control-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(145deg, #e67e22, #d35400);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.stop {
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+        }
+
+        /* Projection Screen */
+        .screen {
+            width: 400px;
+            height: 250px;
+            background: white;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+            overflow: hidden;
+            position: relative;
+            border: 5px solid #333;
+        }
+
+        .projection-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .projection-frame {
+            width: 33.33%;
+            height: 33.33%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: projection-flicker 2s infinite;
+        }
+
+        /* Animations */
+        @keyframes lens-rotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes lens-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(241, 196, 15, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(241, 196, 15, 0.7); }
+        }
+
+        @keyframes reflection-move {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 10px); }
+        }
+
+        @keyframes reel-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes reel-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        @keyframes frame-glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.5); box-shadow: 0 0 20px #f39c12; }
+        }
+
+        @keyframes frame-content {
+            0% { content: '🎬'; }
+            25% { content: '🎥'; }
+            50% { content: '📽️'; }
+            75% { content: '🎞️'; }
+            100% { content: '🎬'; }
+        }
+
+        @keyframes light-flicker {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes projection-flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.95); }
+        }
+
+        @keyframes film-move {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+
+        .film-moving {
+            animation: film-move 15s linear infinite;
+        }
+
+        /* Status Indicator */
+        .status {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+            background: #2ecc71;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 10px #2ecc71; }
+            50% { box-shadow: 0 0 20px #2ecc71; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 ANIMATED PROJECTOR 🎥</h1>
+        
+        <div class="projector">
+            <div class="projector-body">
+                <div class="lens-container">
+                    <div class="lens">
+                        <div class="lens-inner"></div>
+                    </div>
+                    <div class="lens-reflection"></div>
+                </div>
+
+                <div class="reels">
+                    <div class="reel left"></div>
+                    <div class="reel right"></div>
+                </div>
+
+                <div class="film-strip">
+                    <div class="film-frame"></div>
+                    <div class="film-frame"></div>
+                    <div class="film-frame"></div>
+                    <div class="film-frame"></div>
+                    <div class="film-frame"></div>
+                    <div class="film-frame"></div>
+                </div>
+
+                <div class="light-beam"></div>
+            </div>
+        </div>
+
+        <!-- Projection Screen -->
+        <div class="screen">
+            <div class="projection-content" id="projectionContent">
+                <!-- JavaScript will populate this -->
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="control-btn" onclick="startProjector()">▶ START</button>
+            <button class="control-btn stop" onclick="stopProjector()">⏹ STOP</button>
+            <button class="control-btn" onclick="changeFilm()">🔄 CHANGE FILM</button>
+        </div>
+
+        <!-- Status -->
+        <div class="status" id="status">
+            PROJECTOR STATUS: RUNNING <span class="status-indicator"></span>
+        </div>
+    </div>
+
+    <script>
+        let projectorInterval;
+        let isRunning = true;
+        const films = [
+            ['🎬', '🎥', '📽️', '🎞️', '🎟️', '🍿'],
+            ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊'],
+            ['🌟', '⭐', '✨', '💫', '☄️', '🌠'],
+            ['🎨', '🎭', '🎪', '🎟️', '🎫', '🏆'],
+            ['🌍', '🌎', '🌏', '🌕', '🌖', '🌗'],
+            ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐']
+        ];
+        let currentFilm = 0;
+
+        function startProjector() {
+            isRunning = true;
+            document.getElementById('status').innerHTML = 'PROJECTOR STATUS: RUNNING <span class="status-indicator"></span>';
+            animateProjection();
+        }
+
+        function stopProjector() {
+            isRunning = false;
+            document.getElementById('status').innerHTML = 'PROJECTOR STATUS: STOPPED <span style="background: #e74c3c; width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-left: 10px;"></span>';
+            clearInterval(projectorInterval);
+        }
+
+        function changeFilm() {
+            currentFilm = (currentFilm + 1) % films.length;
+            updateProjectionContent();
+        }
+
+        function updateProjectionContent() {
+            const content = document.getElementById('projectionContent');
+            content.innerHTML = '';
+            
+            for (let i = 0; i < 9; i++) {
+                const frame = document.createElement('div');
+                frame.className = 'projection-frame';
+                frame.textContent = films[currentFilm][i % films[currentFilm].length];
+                content.appendChild(frame);
+            }
+        }
+
+        function animateProjection() {
+            if (projectorInterval) clearInterval(projectorInterval);
+            
+            projectorInterval = setInterval(() => {
+                if (isRunning) {
+                    updateProjectionContent();
+                    
+                    // Randomly change lens color
+                    const lensInner = document.querySelector('.lens-inner');
+                    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    lensInner.style.background = `radial-gradient(circle at 30% 30%, #fff, #ffd700, ${randomColor})`;
+                }
+            }, 200);
+        }
+
+        // Initialize projector
+        window.onload = function() {
+            updateProjectionContent();
+            animateProjection();
+
+            // Add click sound effect simulation (visual only)
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+        };
+
+        // Add some interactive film reel movement on hover
+        document.querySelector('.projector').addEventListener('mouseenter', function() {
+            document.querySelectorAll('.reel').forEach(reel => {
+                reel.style.animationDuration = '2s';
+            });
+        });
+
+        document.querySelector('.projector').addEventListener('mouseleave', function() {
+            document.querySelectorAll('.reel').forEach(reel => {
+                reel.style.animationDuration = '4s';
+            });
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isRunning) {
+                    stopProjector();
+                } else {
+                    startProjector();
+                }
+            } else if (e.code === 'KeyF') {
+                changeFilm();
+            }
+        });
+
+        // Display keyboard shortcuts
+        const shortcuts = document.createElement('div');
+        shortcuts.style.color = 'rgba(255,255,255,0.5)';
+        shortcuts.style.marginTop = '20px';
+        shortcuts.style.fontSize = '14px';
+        shortcuts.innerHTML = 'Keyboard: SPACE = Start/Stop | F = Change Film';
+        document.querySelector('.container').appendChild(shortcuts);
+    </script>
+</body>
+</html>
