@@ -225,11 +225,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - CSS animation techniques from the web development community
 - Color theory principles for pattern design
 - Performance optimization tips from web animation experts
+- 
+## Contact
 
+Om Gedam
 
-Project Link: [https://github.com/yourusername/animated-projector](https://github.com/yourusername/animated-projector)
+GitHub: [https://github.com/itsomg134](https://github.com/itsomg134)
 
-### Version 1.1 (Planned)
+Email: [omgedam123098@gmail.com](mailto:omgedam123098@gmail.com)
+
+Twitter (X): [https://twitter.com/omgedam](https://twitter.com/omgedam)
+
+LinkedIn: [https://linkedin.com/in/omgedam](https://linkedin.com/in/omgedam)
+
+Portfolio: [https://ogworks.lovable.app](https://ogworks.lovable.app)
+
 - [ ] Sound effects simulation
 - [ ] More complex patterns
 - [ ] Pattern editor interface
